@@ -1,0 +1,72 @@
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# =========================
+# VIRTUAL ENVIRONMENTS
+# =========================
+venv/
+env/
+ENV/
+
+# =========================
+# IDEs / EDITORS
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# DATABASE FILES
+# =========================
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+# LOG FILES
+# =========================
+*.log
+
+# =========================
+# ML MODELS (TOO LARGE)
+# =========================
+models/*.pkl
+models/*.pth
+models/*.h5
+models/*.joblib
+
+# =========================
+# ENVIRONMENT VARIABLES
+# =========================
+.env
+.env.local
+.env.production

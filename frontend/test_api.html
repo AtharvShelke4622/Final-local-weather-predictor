@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Dashboard Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { padding: 15px; border: 1px solid #ccc; margin: 10px 0; }
+        .success { border-color: #4CAF50; background: #dff0d8; }
+        .error { border-color: #f44336; background: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>Weather Dashboard API Test</h1>
+    
+    <div class="test" id="devices">
+        <h3>Testing Devices API...</h3>
+    </div>
+    
+    <div class="test" id="health">
+        <h3>Testing Health API...</h3>
+    </div>
+
+    <script>
+        async function testAPI() {
+            // Test devices API
+            try {
+                const response = await fetch('http://localhost:8002/api/v1/devices');
+                const data = await response.json();
+                document.getElementById('devices').className = 'test success';
+                document.getElementById('devices').innerHTML = `
+                    <h3>✅ Devices API Working</h3>
+                    <p>Found ${data.length} devices:</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('devices').className = 'test error';
+                document.getElementById('devices').innerHTML = `
+                    <h3>❌ Devices API Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+
+            // Test health API
+            try {
+                const response = await fetch('http://localhost:8002/healthz');
+                const data = await response.json();
+                document.getElementById('health').className = 'test success';
+                document.getElementById('health').innerHTML = `
+                    <h3>✅ Health API Working</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('health').className = 'test error';
+                document.getElementById('health').innerHTML = `
+                    <h3>❌ Health API Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+
+        testAPI();
+        
+        // Refresh every 5 seconds
+        setInterval(testAPI, 5000);
+    </script>
+</body>
+</html>
