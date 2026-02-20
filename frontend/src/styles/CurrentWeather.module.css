@@ -1,0 +1,60 @@
+.currentWeather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  color: white;
+  min-width: 280px;
+}
+
+.mainInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.temp {
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.condition {
+  font-size: 1.4rem;
+  margin-top: 8px;
+  opacity: 0.95;
+}
+
+.feelsLike {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.feelsLike span {
+  font-weight: 600;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .currentWeather {
+    min-width: 100%;
+    padding: 20px;
+  }
+  
+  .icon {
+    font-size: 3rem;
+  }
+  
+  .temp {
+    font-size: 3.5rem;
+  }
+}

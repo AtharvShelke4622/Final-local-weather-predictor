@@ -6,6 +6,10 @@ import DeviceList from './components/DeviceList'
 import SensorCard from './components/SensorCard'
 import ForecastCard from './components/ForecastCard'
 import PredictionText from './components/PredictionText'
+import CurrentWeather from './components/CurrentWeather'
+import WeatherDetails from './components/WeatherDetails'
+import HourlyForecast from './components/HourlyForecast'
+import LocationCard from './components/LocationCard'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 import LoadingSkeleton from './components/LoadingSkeleton'
 import FullscreenButton from './components/FullscreenButton'
@@ -198,6 +202,57 @@ function AppContent() {
                 </>
               )}
             </section>
+          </CollapsiblePanel>
+
+          {/* =====================
+              CURRENT WEATHER & LOCATION
+          ===================== */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '16px', marginBottom: '16px' }}>
+            <CurrentWeather 
+              temperature={latest?.temperature} 
+              humidity={latest?.humidity}
+            />
+            <LocationCard 
+              deviceId={selected || undefined}
+              lat={12.9716}
+              lon={77.5946}
+            />
+          </div>
+
+          {/* =====================
+              WEATHER DETAILS
+          ===================== */}
+          <CollapsiblePanel title="📊 Weather Details" defaultOpen={true}>
+            <WeatherDetails 
+              humidity={latest?.humidity}
+              windSpeed={latest?.wind_speed}
+              radiation={latest?.radiation}
+              precipitation={latest?.precipitation}
+            />
+          </CollapsiblePanel>
+
+          {/* =====================
+              HOURLY FORECAST
+          ===================== */}
+          <CollapsiblePanel title="⏰ Hourly Forecast" defaultOpen={true}>
+            {loading ? (
+              <LoadingSkeleton type="chart" />
+            ) : forecast && forecast.for_ts ? (
+              <HourlyForecast 
+                forecasts={forecast.for_ts.map((time, i) => ({
+                  time,
+                  temperature: forecast.predictions.temperature?.[i] || 0,
+                  humidity: forecast.predictions.humidity?.[i] || 0,
+                  wind_speed: forecast.predictions.wind_speed?.[i] || 0,
+                  precipitation: forecast.predictions.precipitation?.[i] || 0,
+                  radiation: forecast.predictions.radiation?.[i] || 0,
+                }))}
+              />
+            ) : (
+              <div style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>
+                No hourly forecast available
+              </div>
+            )}
           </CollapsiblePanel>
 
           {/* =====================
