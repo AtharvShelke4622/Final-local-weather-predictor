@@ -25,7 +25,7 @@ N_FEATURES = len(TARGETS)
 DEVICE = "cpu"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_DIR = os.path.join(BASE_DIR, "models")
+MODEL_DIR = os.path.join(BASE_DIR, "..", "data", "models")
 
 # ======================
 # FASTAPI APP
@@ -61,7 +61,7 @@ except FileNotFoundError:
     print("Warning: scaler.pkl not found, using dummy predictions")
 
 try:
-    lstm = LSTMModel(N_FEATURES, N_FEATURES * FORECAST_STEPS).to(DEVICE)
+    lstm = LSTMModel(N_FEATURES, N_FEATURES).to(DEVICE)
     lstm.load_state_dict(
         torch.load(os.path.join(MODEL_DIR, "enhanced_lstm.pt"), map_location=DEVICE)
     )

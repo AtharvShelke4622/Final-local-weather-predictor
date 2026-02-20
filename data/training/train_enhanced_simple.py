@@ -34,7 +34,7 @@ SEQ_LEN = 24
 BATCH_SIZE = 32
 EPOCHS = 15
 LR = 1e-3
-DEVICE = "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 TARGETS = ["T2M", "RH2M", "WS2M", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR"]
 

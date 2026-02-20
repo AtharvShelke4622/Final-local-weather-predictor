@@ -7,7 +7,7 @@ export interface PredictionTextResponse {
 
 export async function fetchPredictionText(deviceId: string): Promise<PredictionTextResponse> {
   const res = await fetch(
-    `http://localhost:8000/api/v1/prediction-text?device_id=${deviceId}`,
+    `/api/v1/prediction-text?device_id=${deviceId}`,
     { mode: 'cors' }
   )
 

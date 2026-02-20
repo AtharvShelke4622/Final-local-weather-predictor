@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, BackgroundTasks, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional, AsyncGenerator
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from sqlalchemy import select
 from logging_config import logger, audit_logger, setup_logging, error_boundary, database_transaction
 from app_config import settings
@@ -129,9 +129,6 @@ async def predict_public(device_id: str = Query(...)):
             # Return dummy predictions when insufficient data
             last_reading = await crud.get_latest_reading(session, device_id)
             if last_reading:
-# Generate 8-hour dummy forecast based on last reading
-            last_reading = await crud.get_latest_reading(session, device_id)
-            if last_reading:
                 # Generate 8-hour dummy forecast based on last reading
                 base_temp = getattr(last_reading, 'temperature', 25.0)
                 base_humidity = getattr(last_reading, 'humidity', 60.0)
@@ -189,15 +186,29 @@ async def predict_public(device_id: str = Query(...)):
 @app.get("/api/v1/prediction-text")
 async def prediction_text_public(device_id: str = Query(...)):
     """Public prediction text endpoint"""
-    return {
-        "device_id": device_id,
-        "model_version": "demo",
-        "generated_at": datetime.now(timezone.utc),
-        "prediction_text": {
-            "summary": ["Weather data available for analysis"],
-            "trend": ["Temperature patterns consistent with seasonal expectations"]
+    async with AsyncSessionLocal() as session:
+        window = await crud.last_n_readings(session, device_id, n=24)
+        
+        if not window:
+            return {
+                "device_id": device_id,
+                "model_version": "fallback",
+                "generated_at": datetime.now(timezone.utc),
+                "prediction_text": {
+                    "summary": ["No weather data available for insights"],
+                    "trend": ["Please ensure your device is sending regular readings"]
+                }
+            }
+        
+        for_ts, preds, model_version = await predict_8h(device_id, window)
+        readable_text = generate_prediction_text(preds)
+        
+        return {
+            "device_id": device_id,
+            "model_version": model_version,
+            "generated_at": datetime.now(timezone.utc),
+            "prediction_text": readable_text
         }
-    }
 
 # =========================================================
 # INGEST
