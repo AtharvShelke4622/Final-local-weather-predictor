@@ -4,8 +4,13 @@ from app_config import settings
 from db_models import Base
 from fastapi import Depends
 
+# Convert postgresql:// to postgresql+psycopg:// for async support
+DATABASE_URL = settings.DATABASE_URL
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    DATABASE_URL,
     echo=False,
     future=True,
     pool_pre_ping=True,
