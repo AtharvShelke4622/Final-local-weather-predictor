@@ -8,6 +8,8 @@ services:
   envVars:
     - key: ENV
       value: production
+    - key: PYTHONPATH
+      value: /app
     - key: MODEL_SERVER_URL
       value: https://final-local-weather-predictor.onrender.com
     - key: DATABASE_URL
