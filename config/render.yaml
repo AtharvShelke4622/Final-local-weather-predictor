@@ -3,8 +3,8 @@ services:
   name: weather-backend
   env: python
   plan: free
-  buildCommand: "pip install -r config/backend_requirements.txt && python -m uvicorn backend.main:app --host=0.0.0.0 --port=8000"
-  startCommand: "PYTHONPATH=/app python -m uvicorn backend.main:app --host=0.0.0.0 --port=$PORT"
+  buildCommand: "pip install -r config/backend_requirements.txt"
+  startCommand: "cd /app/backend && PYTHONPATH=/app python -m uvicorn main:app --host=0.0.0.0 --port=$PORT"
   envVars:
     - key: ENV
       value: production
