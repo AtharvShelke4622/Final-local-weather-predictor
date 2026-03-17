@@ -4,12 +4,12 @@ services:
   env: python
   plan: free
   buildCommand: "pip install -r config/backend_requirements.txt"
-  startCommand: "cd /app/backend && PYTHONPATH=/app python -m uvicorn main:app --host=0.0.0.0 --port=$PORT"
+  startCommand: "cd /opt/render/project/src/backend && PYTHONPATH=/opt/render/project/src python -m uvicorn main:app --host=0.0.0.0 --port=$PORT"
   envVars:
     - key: ENV
       value: production
     - key: PYTHONPATH
-      value: /app
+      value: /opt/render/project/src
     - key: MODEL_SERVER_URL
       value: https://final-local-weather-predictor.onrender.com
     - key: DATABASE_URL
