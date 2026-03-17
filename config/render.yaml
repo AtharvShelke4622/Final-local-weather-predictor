@@ -10,11 +10,3 @@ services:
       value: production
     - key: PYTHONPATH
       value: /opt/render/project/src
-    - key: MODEL_SERVER_URL
-      value: https://final-local-weather-predictor.onrender.com
-    - key: DATABASE_URL
-      value: postgresql+asyncpg://postgres:Atharv%404622@db.zraoxemryoukmflqcnjm.supabase.co:5432/postgres
-    - key: SECRET_KEY
-      value: your-secret-key-change-in-production
-    - key: REDIS_URL
-      value: redis://localhost:6379
