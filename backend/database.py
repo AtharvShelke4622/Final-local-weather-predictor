@@ -3,17 +3,22 @@ from sqlalchemy import text
 from app_config import settings
 from db_models import Base
 from fastapi import Depends
+import os
 
-# Convert postgresql:// to postgresql+psycopg:// for async support
-DATABASE_URL = settings.DATABASE_URL
-if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+# Get DATABASE_URL from environment
+DATABASE_URL: str = os.environ.get("DATABASE_URL") or settings.DATABASE_URL or ""
+
+# Convert postgresql:// to postgresql+asyncpg:// for async support
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
     future=True,
     pool_pre_ping=True,
+    pool_size=5,
+    max_overflow=10,
 )
 
 AsyncSessionLocal = async_sessionmaker(
