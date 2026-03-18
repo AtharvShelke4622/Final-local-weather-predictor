@@ -149,6 +149,10 @@ def rolling_forecast(window: np.ndarray) -> Dict[str, List[float]]:
 # ======================
 # ROUTE
 # ======================
+@app.get("/")
+async def root():
+    return {"message": "Weather Model Server", "status": "running"}
+
 @app.get("/health")
 async def health():
     return {"status": "healthy", "model_loaded": lstm is not None}
