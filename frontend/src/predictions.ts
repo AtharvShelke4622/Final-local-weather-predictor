@@ -1,3 +1,5 @@
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8002';
+
 export interface PredictionTextResponse {
   device_id: string
   model_version: string
@@ -7,7 +9,7 @@ export interface PredictionTextResponse {
 
 export async function fetchPredictionText(deviceId: string): Promise<PredictionTextResponse> {
   const res = await fetch(
-    `/api/v1/prediction-text?device_id=${deviceId}`,
+    `${API_BASE_URL}/api/v1/prediction-text?device_id=${deviceId}`,
     { mode: 'cors' }
   )
 
