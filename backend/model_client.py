@@ -1,4 +1,5 @@
 import httpx
+import random
 from datetime import datetime, timedelta, timezone
 from typing import List
 from app_config import settings
@@ -28,8 +29,11 @@ async def predict_8h(device_id: str, recent_window: List[List[float]]):
             # HARD fallback (model server unreachable)
             last = recent_window[-1]
             preds = {
-                t: [float(last[i])] * 8
-                for i, t in enumerate(TARGETS)
+                "temperature": [float(last[0]) + 0.15 * step for step in range(8)],
+                "humidity": [float(last[1]) + random.uniform(-0.6, 0.6) * step for step in range(8)],
+                "wind_speed": [max(0, float(last[2]) + 0.2 * step) for step in range(8)],
+                "radiation": [max(0, float(last[3]) + 50 * step) for step in range(8)],
+                "precipitation": [max(0, float(last[4]) + 0.02 * step) for step in range(8)],
             }
             model_version = "fallback"
 
