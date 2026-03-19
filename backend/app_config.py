@@ -17,9 +17,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: List[str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://frontend-five-nu-11.vercel.app",
         "https://*.vercel.app",
-        "https://frontend-i1dh9wghy-atharvshelke337-6487s-projects.vercel.app",
     ]
 
     model_config = SettingsConfigDict(
