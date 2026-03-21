@@ -237,7 +237,7 @@ async def ingest(
         wind_speed=payload.wind_speed,
         radiation=payload.radiation,
         precipitation=payload.precipitation,
-        raw=payload.model_dump(),
+        raw=payload.model_dump(mode='json'),
     )
 
     async with database_transaction(session, "ingest_sensor_reading"):
