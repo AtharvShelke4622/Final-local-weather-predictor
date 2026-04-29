@@ -111,6 +111,62 @@ async def devices_public():
         items = await crud.list_devices(session)
         return [DeviceOut(**i) for i in items]
 
+@app.post("/api/v1/public/ingest")
+@limiter.limit("60/minute")
+@error_boundary
+async def public_ingest(
+    request: Request,
+    payload: IngestPayload,
+    bg: BackgroundTasks,
+    session: AsyncSession = Depends(get_session),
+):
+    """Public ingest endpoint - no auth required"""
+    device = await crud.upsert_device(
+        session,
+        payload.device_id,
+        payload.lat,
+        payload.lon,
+    )
+
+    reading = SensorReading(
+        device_id=device.id,
+        device_key=device.device_id,
+        ts=payload.ts or datetime.now(timezone.utc),
+        temperature=payload.temperature,
+        humidity=payload.humidity,
+        wind_speed=payload.wind_speed,
+        radiation=payload.radiation,
+        precipitation=payload.precipitation,
+        raw=payload.model_dump(mode='json'),
+    )
+
+    async with database_transaction(session, "ingest_sensor_reading"):
+        session.add(reading)
+        await session.flush()
+
+    async def _bg_task(dev_id: str):
+        async with AsyncSessionLocal() as s:
+            window = await crud.last_n_readings(s, dev_id, n=24)
+            if not window:
+                return
+            for_ts, preds, model_version = await predict_8h(dev_id, window)
+            result = await s.execute(
+                select(Device).where(Device.device_id == dev_id)
+            )
+            dev = result.scalar_one_or_none()
+            if dev:
+                await crud.store_forecast(
+                    s,
+                    dev,
+                    for_ts,
+                    preds,
+                    model_version,
+                )
+                await s.commit()
+
+    bg.add_task(_bg_task, payload.device_id)
+    return {"status": "ingested"}
+
 @app.get("/api/v1/latest", response_model=Optional[LatestOut])
 async def latest_public(device_id: str = Query(...)):
     """Public latest endpoint"""
